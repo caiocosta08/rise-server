@@ -35,6 +35,17 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.post("/delete", async (req, res) => {});
+router.post("/delete", async (req, res) => {
+    try {
+        const user = await User.findOneAndDelete({_id: req.body._id});
+        if(user){
+            return res.send({ status: 'deleted'});
+        }else{
+            return res.status(400).send({ status: 'not deleted'});
+        }
+    } catch (error) {
+        return res.status(400).send({error: 'delete error'})
+    }
+});
 
 module.exports = app => app.use("/users", router);
