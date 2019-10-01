@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         default: "user"
     },
+    balance: {
+        type: String,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -29,7 +33,7 @@ const UserSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    }
+    },
 });
 
 UserSchema.pre("save", async function(next) {
