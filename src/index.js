@@ -10,6 +10,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 require("./controllers/users.controller")(app);
+require("./controllers/operations.controller")(app);
 
 app.get("/", (req, res) => {
     res.send("Hello World");

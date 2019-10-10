@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
         });
         return res.send(users);
     } catch (error) {
-        return res.status(400).send({ error: "get users failed" });
+        return res.status(400).send({error: error});
     }
 });
 
@@ -31,7 +31,7 @@ router.post("/register", async (req, res) => {
             return res.status(400).send({ error: "registration failed" });
         }
     } catch (error) {
-        return res.status(400).send({ error: "error on registration" });
+        return res.status(400).send({ error: error });
     }
 });
 
@@ -44,7 +44,7 @@ router.post("/delete", async (req, res) => {
             return res.status(400).send({ status: 'not deleted'});
         }
     } catch (error) {
-        return res.status(400).send({error: 'delete error'})
+        return res.status(400).send({error: error})
     }
 });
 
