@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 require("./controllers/users.controller")(app);
 require("./controllers/operations.controller")(app);
+require("./controllers/yields.controller")(app);
 
 app.get("/", (req, res) => {
     res.send("Hello World");
