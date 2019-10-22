@@ -1,7 +1,10 @@
 const express = require('express');
 const Operation = require('../models/operation.model');
+const authMiddleware = require('../middlewares/auth.middleware');
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 router.get("/", async (req, res) => {
     try {
@@ -16,28 +19,24 @@ router.get("/", async (req, res) => {
     }
 });
 
+router.post('/update', async (req, res) => {
+    try {
+        let operation = await req.body;
+        operation = await Operation.find({_id: operation._id /*, userID: operation.userID*/ }, async (error, o) => {
+            o[0].status = operation.status;
+            o[0].save();
+        }, {new: true})
+        if(operation) return res.send(operation);
+        else return res.status(400).send({error: 'Update error'});
+    } catch (error) {
+        return res.status(400).send({error: error})
+    }
+});
+
 router.post("/register", async (req, res) => {
     try {
-        /*
-        const operationTypes = ['withdrawal', 'offset'];
-        const value = (Math.random() * (5000 - 50) + 50).toFixed(2);
-        const userID = [
-            '5d93a8f01c0cae29b0cf3e58',
-            '5d93a8f01c0cae29b0cf3e59',
-            '5d93aa9283e83d0530bfaa70'
-        ];
-        const status = ['Pending', 'Authorized', 'Completed'];
-        const statusBy = userID[1];
-        const operation = {
-            operationType: operationTypes[1],
-            value: value,
-            userID: userID[0],
-            status: status[2],
-            statusBy: statusBy,
-        };
-        */
 
-        const operation = await req.body;
+        let operation = await req.body;
         operation = await Operation.create(operation);
         if(operation){
             return res.send(operation);
@@ -45,6 +44,7 @@ router.post("/register", async (req, res) => {
             return res.status(400).send({error: 'operations register failed'});
         }
     } catch (error) {
+        console.log(error)
         return res.status(400).send({error: error});
     }
 });

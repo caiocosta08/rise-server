@@ -1,110 +1,135 @@
 const mongoose = require("../database");
 const bcrypt = require("bcryptjs");
+const functions = require('../functions');
+
+
+const getDate = (type) => {
+    let date = new Date();
+    let hour = date.getHours() >= 10 ? date.getHours() : '0' + date.getHours();
+    let minutes = date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes();
+    let seconds = date.getSeconds() >= 10 ? date.getSeconds() : '0' + date.getSeconds();
+    let day = date.getDay() >= 10 ? date.getDay() : '0' + date.getDay();
+    let month = date.getMonth() >= 10 ? date.getMonth() : '0' + date.getMonth();
+    let year = date.getFullYear();
+
+    let moment = day + '-' + month + '-' + year + ' ' + hour + ':' + minutes + ':' + seconds;
+    if (type == 'dmy') return moment.split(' ')[0];
+    if (type == 'hour') return moment.split(' ')[1];
+    if (type == 'date') return moment;
+}
 
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        uppercase: true,
     },
     email: {
         type: String,
         required: true,
         unique: true,
-        lowercase: true
+        uppercase: true,
     },
     password: {
         type: String,
         required: true,
         select: false
     },
+    rate: {
+        type: Number
+    },
     accountType: {
         type: String,
-        required: true,
-        default: "user"
+        //required: true,
+        uppercase: true,
+        default: "USER"
     },
     balance: {
-        type: String,
+        type: Number,
         default: 0,
-        required: true,
+        //required: true,
     },
     personType: {
         type: String,
-        default: 'Person',
-        required: true,
+        default: 'PERSON',
+        uppercase: true,
+        //required: true,
     },
     sex: {
         type: String,
-        default: 'Male',
-        required: true,
+        default: 'MALE',
+        uppercase: true,
+        //required: true,
     },
     document: {
         type: String,
-        required: true,
+        //required: true,
     },
     phone: {
         type: String,
-        required: true,
+        //required: true,
     },
     birthDate: {
         type: Date,
-        required: true,
+        //required: true,
     },
     bank: {
         type: String,
-        required: true,
+        //required: true,
     },
     bankAgency: {
         type: String,
-        required: true,
+        //required: true,
     },
     bankAccount: {
         type: String,
-        required: true,
+        //required: true,
     },
     bankAccountType: {
         type: String,
-        required: true,
-        defaut: 'Current'
+        //required: true,
+        //defaut: 'CURRENT'
     },
     rg: {
         type: String,
-        required: true
+        //required: true
     },
     cep: {
         type: String,
-        required: true,
+        //required: true,
     },
     street: {
         type: String,
-        required: true,
+        //required: true,
     },
     neighborhood: {
         type: String,
-        required: true,
+        //required: true,
     },
     city: {
         type: String,
-        required: true,
+        //required: true,
     },
     state: {
         type: String,
-        required: true,
+        //required: true,
     },
     adressNumber: {
         type: String,
-        required: true,
+        //required: true,
     },
     createdAt: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: getDate()
     },
     updatedAt: {
-        type: Date,
-        default: Date.now
+        type: String,
+        default: getDate()
     },
 });
 
-UserSchema.pre("save", async function(next) {
+UserSchema.pre("save", async function(next){
+    this.updatedAt = getDate('date');
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
     next();
