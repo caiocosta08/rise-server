@@ -23,14 +23,14 @@ app.listen(process.env.PORT || 8000, () => {
     console.log(message);
 });
 
-const reload = () => {
+// const reload = () => {
 
-    setTimeout(() => {
-        //console.log(functions.getDate());
-        //if(moment == '19:15')
-        //console.log(moment);
-        reload();
-    }, 1000);    
-}
+//     setTimeout(() => {
+//         //console.log(functions.getDate());
+//         //if(moment == '19:15')
+//         //console.log(moment);
+//         reload();
+//     }, 1000);    
+// }
 //reload();
 //functions.reloadYields();

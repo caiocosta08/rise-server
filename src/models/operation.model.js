@@ -1,6 +1,7 @@
 const mongoose = require('../database');
 const functions = require('../functions');
 const Yield = require('./yield.model');
+const User = require('./user.model');
 
 const getDate = (type) => {
     let date = new Date();
@@ -59,38 +60,42 @@ const OperationSchema = new mongoose.Schema({
 
 });
 
-OperationSchema.pre("save", async function (next) {
+OperationSchema.pre("save", /*async*/ function (next) {
 
-    console.log('this pre save\n\n')
+
     console.log(this)
-    console.log('\n\nthis pre save\n\n')
-    //update or create yield
-    if (this.status == 'AUTHORIZED') {
-        let y = await Yield.find({ date: this.date, userID: this.userID }, async (error, y) => {
-            if (y.length > 0) {
-                y[0].input = this.type == 'INPUT' ? (y[0].input + this.value) : y[0].input,
-                    y[0].output = this.type == 'OUTPUT' ? (y[0].output + this.value) : y[0].output,
-                    y[0].finalBalance = y[0].initialBalance + (y[0].input - y[0].output);
-                y[0].save((err, data) => {
-                    if (err) throw err;
-                    console.log('\n\nthis data\n\n')
-                    console.log(data)
-                    console.log('\n\nthis data\n\n')
-                });
-            }
-        });
-
-        if (y.length == 0) {
-            y = await Yield.create({
-                initialBalance: this.type == 'INPUT' ? this.value : 0,
-                userID: this.userID,
-                date: this.date,
-                input: this.type == 'INPUT' ? this.value : 0,
-                output: this.type == 'OUTPUT' ? this.value : 0,
-                finalBalance: this.value,
-            });
-        }
+    if(this.status === 'AUTHORIZED'){
+        User.findOneAndUpdate({_id: this.userID}, function(err, doc){
+            console.log(doc)
+        })
     }
+
+    // console.log(this)
+    //update or create yield
+    // if (this.status == 'AUTHORIZED') {
+    //     let y = await Yield.find({ date: this.date, userID: this.userID }, async (error, y) => {
+    //         if (y.length > 0) {
+    //             y[0].input = this.type == 'INPUT' ? (y[0].input + this.value) : y[0].input,
+    //                 y[0].output = this.type == 'OUTPUT' ? (y[0].output + this.value) : y[0].output,
+    //                 y[0].finalBalance = y[0].initialBalance + (y[0].input - y[0].output);
+    //             y[0].save((err, data) => {
+    //                 if (err) throw err;
+    //                 // console.log(data)
+    //             });
+    //         }
+    //     });
+
+    //     if (y.length == 0) {
+    //         y = await Yield.create({
+    //             initialBalance: this.type == 'INPUT' ? this.value : 0,
+    //             userID: this.userID,
+    //             date: this.date,
+    //             input: this.type == 'INPUT' ? this.value : 0,
+    //             output: this.type == 'OUTPUT' ? this.value : 0,
+    //             finalBalance: this.value,
+    //         });
+    //     }
+    // }
     this.updatedAt = getDate('date');
     next();
 });
